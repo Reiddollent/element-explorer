@@ -10,7 +10,7 @@
 
 ## 网页压缩包
 
-静态文件位于 dist：index.html、styles.css、elements.js、electron-model.js、data.js、app.js。六个文件保持同一目录，可直接打开 index.html，或整体上传到静态主机。element-explorer-web.zip 仅包含这些网页文件。
+静态文件位于 dist：index.html、styles.css、elements.js、electron-model.js、data.js、i18n.js、app.js。七个文件保持同一目录，可直接打开 index.html，或整体上传到静态主机。element-explorer-web.zip 仅包含这些网页文件。
 
 ## 维护职责
 
@@ -21,7 +21,8 @@
 | dist/elements.js | 生成的元素参考数据 |
 | dist/electron-model.js | 排布展开、电子计数、角向形状 |
 | dist/data.js | 17个化合物条目及几何结构 |
-| dist/app.js | 界面联动和绘图 |
+| dist/app.js | 界面联动、周期表和绘图 |
+| dist/i18n.js | 语言偏好与英文内容 |
 | dist/index.html / styles.css | 页面文字、结构和样式 |
 | verify.cjs | 数据和模型的一致性检查 |
 

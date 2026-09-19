@@ -12,6 +12,16 @@ for(const [kind,count] of [['s',1],['p',3],['d',5],['f',7]])assert.equal(ORBITAL
 assert.equal(ORBITAL_SHAPES.d[0].amplitude([0,1,0]),0);assert.equal(ORBITAL_SHAPES.f[4].amplitude([0,1,0]),0);assert.equal(COMPOUNDS.length,17);
 assert.deepEqual(orbitalOccupancy(2,3),[1,1,0]);assert.deepEqual(orbitalOccupancy(3,3),[1,1,1]);assert.deepEqual(orbitalOccupancy(4,3),[2,1,1]);assert.deepEqual(orbitalOccupancy(6,3),[2,2,2]);
 for(const c of COMPOUNDS){assert.equal(c.steps.length,3);assert.ok(c.atoms.every(a=>a.p.length===3&&a.p.every(Number.isFinite)));assert.ok(c.bonds.every(([a,b])=>c.atoms[a]&&c.atoms[b]));if(!c.ionic){const total=c.atoms.reduce((sum,a)=>sum+electronShells(ELEMENTS.find(e=>e.symbol===a.s).z).at(-1),0);const drawnElectrons=c.bonds.reduce((sum,b)=>sum+2*(b[2]||1),0)+2*c.lone+2*(c.outerLone||0)*c.outer.length;assert.equal(drawnElectrons,total,`${c.formula}: electron conservation`);}}
-const html=fs.readFileSync('dist/index.html','utf8');for(const file of ['styles.css','elements.js','electron-model.js','data.js','app.js']){assert.ok(html.includes(file));assert.ok(fs.statSync('dist/'+file).size>0);}const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length);
+const html=fs.readFileSync('dist/index.html','utf8');for(const file of ['styles.css','elements.js','electron-model.js','data.js','i18n.js','app.js']){assert.ok(html.includes(file));assert.ok(fs.statSync('dist/'+file).size>0);}const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length);
 for(const match of fs.readFileSync('dist/app.js','utf8').matchAll(/\$\('([^']+)'\)/g))assert.ok(ids.includes(match[1]),`Missing DOM id: ${match[1]}`);
-console.log(`PASS: 118 reference configurations, exceptions, shell conservation, s/p/d/f occupancy, ${COMPOUNDS.length} compound models, electron conservation, assets and DOM IDs.`);
+const vm=require('node:vm');
+const translations=fs.readFileSync('dist/i18n.js','utf8');
+const ctx=vm.createContext({});vm.runInContext(translations,ctx);
+for(const c of COMPOUNDS){ctx.c=c;const en=vm.runInContext('localizedCompound(c)',ctx);assert.ok(en.name&&en.geometry&&en.description);assert.equal(en.steps.length,c.steps.length);assert.ok(!/[\u3400-\u9fff]/u.test(JSON.stringify([en.name,en.geometry,en.description,en.steps])),`Untranslated compound: ${c.id}`);}
+assert.equal(vm.runInContext('language',ctx),'en');vm.runInContext("language='zh'",ctx);ctx.c=COMPOUNDS[0];assert.equal(vm.runInContext('localizedCompound(c).name',ctx),'甲烷');
+const positionSource=fs.readFileSync('dist/app.js','utf8').match(/function tablePosition\(e\)\{[^\n]+/)[0];
+const position=vm.runInNewContext('('+positionSource+')');
+const cells=ELEMENTS.map(e=>position(e));assert.equal(new Set(cells.map(p=>`${p.row}:${p.column}`)).size,118);
+for(const [z,row,column] of [[1,2,2],[2,2,19],[6,3,15],[26,5,9],[57,10,4],[71,10,18],[89,11,4],[103,11,18],[118,8,19]]){assert.equal(cells[z-1].row,row);assert.equal(cells[z-1].column,column);}
+assert.ok(html.includes('https://github.com/Reiddollent/element-explorer'));
+console.log(`PASS: 118 configurations and periodic positions; ${COMPOUNDS.length} bilingual compounds; electron conservation, assets and DOM IDs.`);

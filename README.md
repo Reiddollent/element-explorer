@@ -1,33 +1,23 @@
-# 元素结构 · Element Structure
+# Element Structure
 
-面向化学初学者的轻量交互网页，覆盖118种元素，提供17个化合物实例。原生 HTML、CSS 和 JavaScript，无需安装依赖。
+[Open the website](https://reiddollent.github.io/element-explorer/)
 
-## 本地预览
+118 elements with electron configurations, shell diagrams, interactive s/p/d/f orbital shapes, and 17 compound examples. English and 中文; English is the default.
 
-运行 `node server.cjs` 后打开 http://127.0.0.1:4173 。也可直接打开 `dist/index.html`。
+## Run locally
 
-## 功能
+Open `dist/index.html`, or run `node server.cjs` and visit http://127.0.0.1:4173.
 
-- 按中文名、英文名、符号或原子序数搜索；筛选常用、主族、d区、镧系和锕系元素。
-- 电子层、参考排布、轨道方框联动；s/p/d/f角向形状可旋转。
-- 简写与完整排布切换，参考性质、缺失数据和预测信息就近标注。
-- 10个分子、7个离子化合物实例；空间结构、路易斯图和分步说明。
-- 电子层计数练习，键盘与触屏操作，响应式布局。
+## Edit and publish
 
-## 科学范围
+- `dist/app.js`: interactions and diagrams
+- `dist/i18n.js`: language selection and English compound text
+- `dist/index.html` / `styles.css`: page content and layout
+- `dist/data.js`: compound structures and Chinese text
+- `scripts/build-elements.cjs`: regenerate element data from the saved source
 
-排布及性质采用参考数据，不做量子化学预测。轨道图省略径向节点和相对论效应，不表示电子运动轨迹。最外层计数不能直接等同于 d/f 区价电子数。104—118号统一标记理论参考；缺失值不补零。数据快照、铹排布修正和原子质量说明见 [sources/README.md](sources/README.md)。
+Run `node verify.cjs` before pushing. Changes on `main` deploy through GitHub Pages.
 
-化合物是有限教学集合。当前路易斯绘图支持单中心、最多四个外围原子；多中心和环状分子需要扩展绘图器。
+## Data and models
 
-## 校验与更新
-
-`node verify.cjs` 检查118种参考排布、电子数守恒、排布例外、s/p/d/f占据以及17个化合物的数据一致性。
-
-`node scripts/build-elements.cjs` 根据已保存的来源快照重新生成元素数据。更新原始数据后应核对来源日期、人工修正和对应测试。
-
-## GitHub Pages
-
-上传到自己的 GitHub 仓库，在 Settings → Pages → Build and deployment 中将 Source 设为 GitHub Actions。推送到 main 分支或手动运行 Deploy Pages 工作流后，网站地址会显示在 Pages 设置和部署记录中。
-
-工作流先运行校验，再仅将 dist 目录发布为网站。无需令牌、服务器或付费服务配置。后续修改源码并推送到 main，校验成功后会自动更新同一网站地址。详细说明见 [MAINTENANCE.md](MAINTENANCE.md)。
+Reference data: PubChem, with the lawrencium configuration from NIST. Predictions and missing values are labelled. Diagrams are schematic, not quantum-chemistry calculations. See [sources](sources/README.md) for details.
